@@ -39,7 +39,7 @@ function mergeItems(decodeTags, allItems) {
         var existItem = allItems.find(function (item) {
             return item.barcode === element.barcode;
         });
-        return Object.assign({count:element.count}, existItem);
+        return Object.assign({ count: element.count }, existItem);
     }).filter(function (element) {
         return element.barcode;
     });
