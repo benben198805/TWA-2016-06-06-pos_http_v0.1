@@ -14,34 +14,35 @@ function decodeTags(Tags) {
     return decodeTags;
 }
 
-function mergeItems(decodeTags, allItems) {
-    var mergeItems = decodeTags.map(function (element) {
-        return allItems.find(function (item) {
-            return item.barcode === element;
-        });
-    });
-    return mergeItems.filter(function (element) {
-        return element;
-    });
-}
-
-function transferCartItems(preCartItems) {
-    var result = [];
-    preCartItems.forEach(function (input) {
-        var existItem = result.find(function (item) {
-            return item.barcode === input.barcode;
+function mergeTag(decodeTags) {
+    var mergedTags = [];
+    decodeTags.forEach(function (input) {
+        var existItem = mergedTags.find(function (item) {
+            return item.barcode === input;
         });
 
         if (!existItem) {
-            existItem = Object.assign({
-                count: 0,
-            }, input);
-            result.push(existItem);
+            existItem = {
+                barcode: input,
+                count: 0
+            };
+            mergedTags.push(existItem);
         }
 
         existItem.count++;
     })
-    return result;
+    return mergedTags;
+}
+
+function mergeItems(decodeTags, allItems) {
+    return decodeTags.map(function (element) {
+        var existItem = allItems.find(function (item) {
+            return item.barcode === element.barcode;
+        });
+        return Object.assign({count:element.count}, existItem);
+    }).filter(function (element) {
+        return element.barcode;
+    });
 }
 
 function calculateFreeCount(cartItems, promotionItems) {
@@ -123,8 +124,8 @@ function printReceipt(receipt) {
 
 function printInventory(inputs) {
     var decodeInputs = decodeTags(inputs);
-    var preCartItems = mergeItems(decodeInputs, loadAllItems());
-    var cartItems = transferCartItems(preCartItems);
+    var mergedTags = mergeTag(decodeInputs);
+    var cartItems = mergeItems(mergedTags, loadAllItems());
     var promotedCartItems = calculateFreeCount(cartItems, loadPromotions());
     var billItems = calculateSubtotal(promotedCartItems);
     var receipt = {
