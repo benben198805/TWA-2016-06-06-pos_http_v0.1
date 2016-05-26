@@ -2,10 +2,10 @@ function decodeBarcode(inputs) {
     var decodeInputs = [];
     inputs.forEach(function (element) {
         if (element.indexOf("-") > 0) {
-            var tempArr = element.split('-');
-            var num = parseInt(tempArr[1]) || 0;
+            var splitedArray = element.split('-');
+            var num = parseInt(splitedArray[1]) || 0;
             for (var i = 0; i < num; i++) {
-                decodeInputs.push(tempArr[0]);
+                decodeInputs.push(splitedArray[0]);
             }
         } else {
             decodeInputs.push(element);
@@ -22,7 +22,7 @@ function mergeInpus(decodeInputs, allItems) {
     });
     return mergeItems.filter(function (element) {
         return element;
-    })
+    });
 }
 
 function transferCartItems(preCartItems) {
@@ -45,15 +45,16 @@ function transferCartItems(preCartItems) {
 }
 
 function caculateFreeCount(cartItems, promotionItems) {
-    cartItems.forEach(function (element) {
+    return cartItems.map(function (element) {
         var promotionBarcodes = promotionItems[0].barcodes;
+        var freeCount = 0;
         if (promotionBarcodes.indexOf(element.barcode) > 0) {
-            element.freeCount = Math.floor(element.count / 3);
-        } else {
-            element.freeCount = 0;
+            freeCount = Math.floor(element.count / 3);
         }
+        return Object.assign({
+            freeCount: freeCount
+        }, element);;
     });
-    return cartItems;
 }
 
 function caculateSubtotal(finalCartItems) {
