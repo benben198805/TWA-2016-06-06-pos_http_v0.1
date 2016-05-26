@@ -1,21 +1,21 @@
-function decodeBarcode(inputs) {
-    var decodeInputs = [];
-    inputs.forEach(function (element) {
+function decodeTags(Tags) {
+    var decodeTags = [];
+    Tags.forEach(function (element) {
         if (element.indexOf("-") > 0) {
             var splitedArray = element.split('-');
             var num = parseInt(splitedArray[1]) || 0;
             for (var i = 0; i < num; i++) {
-                decodeInputs.push(splitedArray[0]);
+                decodeTags.push(splitedArray[0]);
             }
         } else {
-            decodeInputs.push(element);
+            decodeTags.push(element);
         }
     });
-    return decodeInputs;
+    return decodeTags;
 }
 
-function mergeInpus(decodeInputs, allItems) {
-    var mergeItems = decodeInputs.map(function (element) {
+function mergeItems(decodeTags, allItems) {
+    var mergeItems = decodeTags.map(function (element) {
         return allItems.find(function (item) {
             return item.barcode === element;
         });
@@ -44,7 +44,7 @@ function transferCartItems(preCartItems) {
     return result;
 }
 
-function caculateFreeCount(cartItems, promotionItems) {
+function calculateFreeCount(cartItems, promotionItems) {
     return cartItems.map(function (element) {
         var promotionBarcodes = promotionItems[0].barcodes;
         var freeCount = 0;
@@ -57,8 +57,8 @@ function caculateFreeCount(cartItems, promotionItems) {
     });
 }
 
-function caculateSubtotal(finalCartItems) {
-    return finalCartItems.map(function (element) {
+function calculateSubtotal(promotedCartItems) {
+    return promotedCartItems.map(function (element) {
         return Object.assign({
             freeSubtotal: element.price * element.freeCount,
             subtotal: element.price * (element.count - element.freeCount)
@@ -66,7 +66,7 @@ function caculateSubtotal(finalCartItems) {
     });
 }
 
-function caculateFreeTotal(billItems) {
+function calculateFreeTotal(billItems) {
     return billItems.reduce(function (a, b) {
         return {
             freeSubtotal: a.freeSubtotal + b.freeSubtotal
@@ -74,7 +74,7 @@ function caculateFreeTotal(billItems) {
     }).freeSubtotal;
 }
 
-function caculateTotal(billItems) {
+function calculateTotal(billItems) {
     return billItems.reduce(function (a, b) {
         return {
             subtotal: a.subtotal + b.subtotal
@@ -104,33 +104,34 @@ function getDateString() {
     return formattedDateString;
 }
 
-function printReceipt(billItems, freeItems, freeTotal, total) {
-    var result = '***<没钱赚商店>购物清单***\n' +
-        '打印时间：' + getDateString() + '\n' +
-        '----------------------\n';
-    billItems.forEach(function (element) {
+function printReceipt(receipt) {
+    var result = `***<没钱赚商店>购物清单***\n打印时间：${getDateString()}\n----------------------\n`;
+    receipt.billItems.forEach(function (element) {
         result += `名称：${element.name}，数量：${element.count}${element.unit}，单价：${element.price.toFixed(2)}(元)，小计：${element.subtotal.toFixed(2)}(元)\n`;
     });
     result += '----------------------\n';
     result += '挥泪赠送商品：\n';
-    freeItems.forEach(function (element) {
+    receipt.freeItems.forEach(function (element) {
         result += `名称：${element.name}，数量：${element.freeCount}${element.unit}\n`;
     });
     result += '----------------------\n';
-    result += `总计：${total.toFixed(2)}(元)\n`;
-    result += `节省：${freeTotal.toFixed(2)}(元)\n`;
+    result += `总计：${receipt.total.toFixed(2)}(元)\n`;
+    result += `节省：${receipt.freeTotal.toFixed(2)}(元)\n`;
     result += '**********************';
     console.log(result);
 }
 
 function printInventory(inputs) {
-    var decodeInputs = decodeBarcode(inputs);
-    var preCartItems = mergeInpus(decodeInputs, loadAllItems());
+    var decodeInputs = decodeTags(inputs);
+    var preCartItems = mergeItems(decodeInputs, loadAllItems());
     var cartItems = transferCartItems(preCartItems);
-    var finalCartItems = caculateFreeCount(cartItems, loadPromotions());
-    var billItems = caculateSubtotal(finalCartItems);
-    var freeTotal = caculateFreeTotal(billItems);
-    var total = caculateTotal(billItems);
-    var freeItems = getFreeItem(billItems);
-    printReceipt(billItems, freeItems, freeTotal, total);
+    var promotedCartItems = calculateFreeCount(cartItems, loadPromotions());
+    var billItems = calculateSubtotal(promotedCartItems);
+    var receipt = {
+        billItems: billItems,
+        freeTotal: calculateFreeTotal(billItems),
+        total: calculateTotal(billItems),
+        freeItems: getFreeItem(billItems)
+    };
+    printReceipt(receipt);
 }
