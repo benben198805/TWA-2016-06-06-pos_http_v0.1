@@ -72,7 +72,7 @@ function calculateFreeTotal(billItems) {
         return {
             freeSubtotal: a.freeSubtotal + b.freeSubtotal
         };
-    }).freeSubtotal;
+    },{freeSubtotal:0}).freeSubtotal;
 }
 
 function calculateTotal(billItems) {
@@ -80,7 +80,7 @@ function calculateTotal(billItems) {
         return {
             subtotal: a.subtotal + b.subtotal
         };
-    }).subtotal;
+    },{subtotal:0}).subtotal;
 }
 
 function getFreeItem(billItems) {
