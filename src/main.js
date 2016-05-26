@@ -1,4 +1,3 @@
-//TODO: Please write code in this file.
 function decodeBarcode(inputs) {
     var decodeInputs = [];
     inputs.forEach(function (element) {
@@ -24,34 +23,9 @@ function mergeInpus(decodeInputs, allItems) {
     return mergeItems.filter(function (element) {
         return element;
     })
-    // var mergeCartItem = [];
-    // decodeInputs.forEach(function (element) {
-    //     var existItem = allItems.find(function (item) {
-    //         return item.barcode === element;
-    //     });
-    //     mergeCartItem.push(existItem);
-    // });
-    // return mergeCartItem;
 }
 
 function transferCartItems(preCartItems) {
-    // var cartItems = [];
-    // preCartItems.forEach(function (element) {
-    //     if (cartItems[element.barcode]) {
-    //         cartItems[element.barcode].count++;
-    //     } else {
-    //         cartItems[element.barcode] = element;
-    //         cartItems[element.barcode].count = 1;
-    //     }
-    // });
-
-    // var cartItemsArray = [];
-    // var keys = Object.keys(cartItems);
-    // keys.forEach(function (key) {
-    //     cartItemsArray.push(cartItems[key]);
-    // });
-
-    // return cartItemsArray;
     var result = [];
     preCartItems.forEach(function (input) {
         var existItem = result.find(function (item) {
@@ -72,7 +46,7 @@ function transferCartItems(preCartItems) {
 
 function caculateFreeCount(cartItems, promotionItems) {
     cartItems.forEach(function (element) {
-        var promotionBarcodes=promotionItems[0].barcodes;
+        var promotionBarcodes = promotionItems[0].barcodes;
         if (promotionBarcodes.indexOf(element.barcode) > 0) {
             element.freeCount = Math.floor(element.count / 3);
         } else {
