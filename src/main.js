@@ -1,6 +1,6 @@
-function decodeTags(Tags) {
+function decodeTags(tags) {
     var decodeTags = [];
-    Tags.forEach(function (element) {
+    tags.forEach(function (element) {
         if (element.indexOf("-") > 0) {
             var splitedArray = element.split('-');
             var num = parseInt(splitedArray[1]) || 0;
