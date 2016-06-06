@@ -1,3 +1,8 @@
+document.write("<script language='JavaScript' src='/js/cal/model/item.js'></script>");
+document.write("<script language='JavaScript' src='/js/cal/model/promotion.js'></script>");
+document.write("<script language='JavaScript' src='/js/cal/model/fixtures.js'></script>");
+
+
 function decodeTags(tags) {
     var decodeTags = [];
     tags.forEach(function (element) {
@@ -72,7 +77,7 @@ function calculateFreeTotal(billItems) {
         return {
             freeSubtotal: a.freeSubtotal + b.freeSubtotal
         };
-    },{freeSubtotal:0}).freeSubtotal;
+    }, { freeSubtotal: 0 }).freeSubtotal;
 }
 
 function calculateTotal(billItems) {
@@ -80,7 +85,7 @@ function calculateTotal(billItems) {
         return {
             subtotal: a.subtotal + b.subtotal
         };
-    },{subtotal:0}).subtotal;
+    }, { subtotal: 0 }).subtotal;
 }
 
 function getFreeItem(billItems) {
