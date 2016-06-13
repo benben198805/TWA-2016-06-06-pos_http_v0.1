@@ -143,3 +143,20 @@ function printInventory(inputs) {
     // printReceipt(receipt);
     return printReceipt(receipt);
 }
+
+
+function printInventoryWithData(inputs) {
+    var decodeInputs = decodeTags(inputs);
+    var mergedTags = mergeTag(decodeInputs);
+    var cartItems = mergeItems(mergedTags, loadAllItems());
+    var promotedCartItems = calculateFreeCount(cartItems, loadPromotions());
+    var billItems = calculateSubtotal(promotedCartItems);
+    var receipt = {
+        billItems: billItems,
+        freeTotal: calculateFreeTotal(billItems),
+        total: calculateTotal(billItems),
+        freeItems: getFreeItem(billItems)
+    };
+    // printReceipt(receipt);
+    return receipt;
+}

@@ -1,6 +1,7 @@
-document.write("<script language='JavaScript' src='/js/cal/main.js'></script>");
+document.write("<script language='JavaScript' src='/js/show_good_list/subTotal.js'></script>");
 
 (function ($) {
+    
     var itemList = localStorage.itemList;
     var items = [];
     var itemArr = itemList.split(",");
@@ -8,9 +9,8 @@ document.write("<script language='JavaScript' src='/js/cal/main.js'></script>");
         items.push(element);
     });
 
-    var result = printInventory(items);
-
-
-    document.write(result);
-
+    var receipt = printInventoryWithData(items);
+    
+    
+    $("div[data-role='store']").show_subTotal(receipt);
 })(jQuery);
